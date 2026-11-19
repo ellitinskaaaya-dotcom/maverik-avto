@@ -162,7 +162,11 @@
   .run{overflow:hidden;padding:var(--s6) 0;border-top:1px solid var(--line)}
   .run-in{white-space:nowrap;font-family:var(--head);font-stretch:160%;font-weight:200;font-size:var(--run);line-height:1;color:transparent;-webkit-text-stroke:1px var(--ghost);will-change:transform}
   /* «Сказали — сделали»: обводка цветом ленты бренда (индиго → оранжевый) на каждой фразе; заливка — цвет фона */
-  .run-in .rb{background:var(--rib);-webkit-background-clip:text;background-clip:text;-webkit-text-stroke:2px transparent;color:var(--bg)}
+  .run .rb{background:var(--rib);-webkit-background-clip:text;background-clip:text;-webkit-text-stroke:2px transparent;color:var(--bg)}
+  /* телефон (2026-11-18, по словам Елены): бегущая строка не читается — фраза в две строки, во всю ширину экрана, строки въезжают навстречу и останавливаются */
+  .run-m{display:none;font-family:var(--head);font-stretch:160%;font-weight:200;font-size:var(--run-m);line-height:1.1;padding:0 var(--pad)}
+  .run-m .rb{display:block;width:max-content}
+  .run-m .rb+.rb{margin-left:auto}
 
   /* 6 голоса */
   .qwho{grid-column:1/11;margin-top:var(--s2)} .rev .who{color:var(--tx)}
@@ -198,7 +202,7 @@
   .mbar{display:none}
 
   @media (max-width:900px){
-    :root{--pad:16px;--gap:12px;--h1:30px;--h2:26px;--price:22px;--lead:19px;--body:17px;--label:12px;--run:72px}
+    :root{--pad:16px;--gap:12px;--h1:30px;--h2:26px;--price:22px;--lead:19px;--body:17px;--label:12px;--run:72px;--run-m:min(calc((100vw - 2*var(--pad))/8),96px)}
     .sec{padding:var(--s6) 0}
     nav{display:none}
     .lg{height:24px}
@@ -212,6 +216,7 @@
     .hero .txt .btn{width:100%}
     .facts{grid-template-columns:1fr;margin-top:var(--s4)}
     .rib-dots{display:none}
+    .run-in{display:none} .run-m{display:block}
     .facts div,.facts div+div{border-right:0;border-bottom:1px solid var(--line);padding:var(--s2) 0}
     .head2{flex-direction:column;align-items:start}
     .head2 .arrow{display:none}
@@ -410,7 +415,7 @@
   </div>
 </div></section>
 
-<div class="run" aria-hidden="true"><div class="run-in"><span class="rb">Сказали&nbsp;— сделали</span>&nbsp;· <span class="rb">Сказали&nbsp;— сделали</span>&nbsp;· <span class="rb">Сказали&nbsp;— сделали</span>&nbsp;· <span class="rb">Сказали&nbsp;— сделали</span>&nbsp;·</div></div>
+<div class="run" aria-hidden="true"><div class="run-in"><span class="rb">Сказали&nbsp;— сделали</span>&nbsp;· <span class="rb">Сказали&nbsp;— сделали</span>&nbsp;· <span class="rb">Сказали&nbsp;— сделали</span>&nbsp;· <span class="rb">Сказали&nbsp;— сделали</span>&nbsp;·</div><p class="run-m"><span class="rb">Сказали&nbsp;—</span><span class="rb">сделали</span></p></div>
 
 <section class="sec" style="border-top:0;padding-top:var(--s6)"><div class="wrap">
   <h2>Отзывы клиентов</h2><p class="mute" style="margin-top:var(--s2)">С&nbsp;Авито, по&nbsp;завершённым сделкам.</p>
@@ -641,6 +646,12 @@
 
   /* бегущая строка (Д3): едет вслед за прокруткой */
   gsap.fromTo('.run-in',{xPercent:0},{xPercent:-35,ease:'none',scrollTrigger:{trigger:'.run',start:'top bottom',end:'bottom top',scrub:true}});
+  /* телефон: две строки въезжают навстречу друг другу и встают на место, пока фраза в нижней половине экрана */
+  mm.add('(max-width:900px)',()=>{
+    const st={trigger:'.run-m',start:'top bottom',end:'center 62%',scrub:.4};
+    gsap.fromTo('.run-m .rb:first-child',{xPercent:-25},{xPercent:0,ease:'none',scrollTrigger:st});
+    gsap.fromTo('.run-m .rb:last-child',{xPercent:25},{xPercent:0,ease:'none',scrollTrigger:{...st}});
+  });
 
   /* 8. ключи: рамка фото раскрывается по мере прокрутки (Д3) */
   gsap.fromTo('.fin-pic',{clipPath:'inset(12% 12% 12% 12%)'},{clipPath:'inset(0% 0% 0% 0%)',ease:'none',scrollTrigger:{trigger:'.fin',start:'top 90%',end:'top 35%',scrub:.6}});
